@@ -56,7 +56,7 @@ func (s *Server) AddServiceInvocationHandler(route string, fn func(ctx context.C
 					return
 				}
 				if o.ContentType != "" {
-					w.Header().Set("Content-type", o.ContentType)
+					w.Header().Set("Content-Type", o.ContentType)
 				}
 			}
 		})))
