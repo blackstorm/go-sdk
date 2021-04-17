@@ -29,7 +29,7 @@ func (s *Server) AddServiceInvocationHandler(route string, fn func(ctx context.C
 			e := &common.InvocationEvent{
 				Verb:        r.Method,
 				QueryString: r.URL.RawQuery,
-				ContentType: r.Header.Get("Content-type"),
+				ContentType: r.Header.Get("Content-Type"),
 			}
 
 			// check for post with no data
@@ -51,12 +51,13 @@ func (s *Server) AddServiceInvocationHandler(route string, fn func(ctx context.C
 
 			// write to response if handler returned data
 			if o != nil && o.Data != nil {
-				if _, err := w.Write(o.Data); err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
 				if o.ContentType != "" {
 					w.Header().Set("Content-Type", o.ContentType)
+				}
+				if _, err := w.Write(o.Data); err != nil {
+					w.Header().Del("Content-Type")
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
 				}
 			}
 		})))
